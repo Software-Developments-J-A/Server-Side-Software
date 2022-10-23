@@ -35,7 +35,7 @@ public class ProductController {
     public ResponseEntity<Product> createProduct( @RequestBody Product product){
         Product newProduct=
                 productRepository.save(
-                        new Product(product.getName(),product.getSummary(),product.getBrand(),product.isStatus()));
+                        new Product(product.getName(),product.getSummary(),product.getBrand(),product.getQuantity(),product.getPrice(),product.isStatus()));
         return new ResponseEntity<Product>(newProduct,HttpStatus.CREATED);
     }
 
@@ -49,6 +49,8 @@ public class ProductController {
         productUpdate.setName(product.getName());
         productUpdate.setSummary(product.getSummary());
         productUpdate.setBrand(product.getBrand());
+        productUpdate.setQuantity(product.getQuantity());
+        productUpdate.setPrice(product.getPrice());
         productUpdate.setStatus(product.isStatus());
 
 
@@ -65,6 +67,24 @@ public class ProductController {
     @GetMapping("/products/status")
     public  ResponseEntity<List<Product>> findProductByStatus(){
         List<Product> products=productRepository.findByStatusSQL(true);
+        if(products.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/products/quantity")
+    public  ResponseEntity<List<Product>> findProductByQuantity(){
+        List<Product> products=productRepository.findByQuantitySQL(true);
+        if(products.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/products/price")
+    public  ResponseEntity<List<Product>> findProductByPrice(){
+        List<Product> products=productRepository.findByPriceSQL(true);
         if(products.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

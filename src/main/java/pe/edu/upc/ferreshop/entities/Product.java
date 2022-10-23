@@ -14,6 +14,10 @@ public class Product {
     private String summary;
     @Column(name="brand", length=255, nullable = false)
     private String brand;
+    @Column(name="quantity",nullable = false)
+    private Long quantity;
+    @Column(name="price",nullable = false)
+    private Long price;
     @Column(name="status")
     private boolean status;
 
@@ -21,11 +25,13 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, String summary, String brand, boolean status) {
+    public Product(String name, String summary, String brand,Long quantity,Long price, boolean status) {
         this.id = id;
         this.name = name;
         this.summary = summary;
         this.brand = brand;
+        this.quantity = quantity;
+        this.price = price;
         this.status = status;
     }
 
@@ -60,6 +66,20 @@ public class Product {
     public void setBrand(String brand) {
         this.brand = brand;
     }
+    public Long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
+    }
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
+    }
 
     public boolean isStatus() {
         return status;
@@ -76,6 +96,8 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", summary='" + summary + '\'' +
                 ", brand='" + brand + '\'' +
+                ", quantity='" + quantity + '\'' +
+                ", price='" + price + '\'' +
                 ", status=" + status +
                 '}';
     }
