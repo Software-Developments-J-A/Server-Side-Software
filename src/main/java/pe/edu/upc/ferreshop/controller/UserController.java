@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.upc.ferreshop.entities.Product;
 import pe.edu.upc.ferreshop.entities.User;
+import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
 import pe.edu.upc.ferreshop.repository.UserRepository;
 
 import java.util.List;
@@ -24,6 +26,13 @@ public class UserController {
         return new ResponseEntity<List<User>>(users,HttpStatus.OK);
     }
 
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getProductById(@PathVariable("id") Long id){
+        User user = userRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Not found User with id="+id));
+        return new ResponseEntity<User>(user,HttpStatus.OK);
+    }
+
     @PostMapping("/users")
     public ResponseEntity<User>createUser(@RequestBody User user) {
         User newUser=
@@ -36,5 +45,29 @@ public class UserController {
                                 )
                 );
         return new ResponseEntity<User>(newUser,HttpStatus.CREATED);
+    }
+
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<User> updateProduct(
+            @PathVariable("id") Long id,
+            @RequestBody User user){
+        User userUpdate= userRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Not found User with id="+id));
+
+        userUpdate.setName(user.getName());
+        userUpdate.setLastname(user.getLastname());
+        userUpdate.setEmail(user.getEmail());
+        userUpdate.setPhone(user.getPhone());
+        userUpdate.setPassword(user.getPassword());
+
+
+        return new ResponseEntity<User>(userRepository.save(userUpdate),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") Long id){
+        userRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

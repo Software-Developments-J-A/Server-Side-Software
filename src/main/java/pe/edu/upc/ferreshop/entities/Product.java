@@ -17,6 +17,7 @@ public class Product {
     @Column(name="status")
     private boolean status;
 
+
     public Product() {
     }
 
