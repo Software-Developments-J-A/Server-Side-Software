@@ -11,11 +11,11 @@ public interface ProductRepository    extends JpaRepository<Product,Long> {
     @Query(value="SELECT * FROM products WHERE  status=?1", nativeQuery = true)
     List<Product> findByStatusSQL(boolean status);
 
-    @Query(value="SELECT * FROM products WHERE  quantity=?1", nativeQuery = true)
-    List<Product> findByQuantitySQL(boolean status);
+    @Query(value="SELECT * FROM products WHERE  quantity=50", nativeQuery = true)
+    List<Product> findByQuantitySQL(Long quantity);
 
-    @Query(value="SELECT * FROM products WHERE  price=?1", nativeQuery = true)
-    List<Product> findByPriceSQL(boolean status);
+    @Query(value="SELECT * FROM products WHERE  price=10", nativeQuery = true)
+    List<Product> findByPriceSQL(Long price);
 
     @Query("SELECT p FROM Product p WHERE p.status=?1")
     List<Product> findByStatusJPQL(boolean status);

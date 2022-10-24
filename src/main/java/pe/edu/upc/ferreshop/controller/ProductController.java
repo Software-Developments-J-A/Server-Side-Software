@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.ferreshop.entities.Product;
+import pe.edu.upc.ferreshop.entities.User;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
 import pe.edu.upc.ferreshop.repository.ProductRepository;
 
@@ -72,22 +73,21 @@ public class ProductController {
         }
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
-
-    @GetMapping("/products/quantity")
-    public  ResponseEntity<List<Product>> findProductByQuantity(){
-        List<Product> products=productRepository.findByQuantitySQL(true);
+    @GetMapping("/products/quantity/{quantity}")
+    public  ResponseEntity<List<Product>> findProductByQuantity(@PathVariable("quantity") Long quantity){
+        List<Product> products=productRepository.findByQuantitySQL(quantity);
         if(products.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<List<Product>>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/products/price")
-    public  ResponseEntity<List<Product>> findProductByPrice(){
-        List<Product> products=productRepository.findByPriceSQL(true);
+    @GetMapping("/products/price/{price}")
+    public  ResponseEntity<List<Product>> findProductByPrice(@PathVariable("price") Long price){
+        List<Product> products=productRepository.findByPriceSQL(price);
         if(products.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<List<Product>>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
 }
