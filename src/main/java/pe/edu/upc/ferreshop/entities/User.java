@@ -22,6 +22,8 @@ public class User {
     @Column(name="password")
     private String password;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Business business;
     public User(){
     }
     public User(String name, String lastname, String email, String password,String phone) {

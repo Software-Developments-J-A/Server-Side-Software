@@ -1,5 +1,7 @@
 package pe.edu.upc.ferreshop.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -22,10 +24,15 @@ public class Product {
     private boolean status;
 
 
+    @ManyToOne
+    @JoinColumn(name="business_id",nullable = false)
+    @JsonIgnore
+    private Business business;
+
     public Product() {
     }
 
-    public Product(String name, String summary, String brand,Long quantity,Long price, boolean status) {
+    public Product(String name, String summary, String brand,Long quantity,Long price, boolean status, Business business) {
         this.id = id;
         this.name = name;
         this.summary = summary;
@@ -33,6 +40,7 @@ public class Product {
         this.quantity = quantity;
         this.price = price;
         this.status = status;
+        this.business= business;
     }
 
     public Long getId() {
@@ -89,6 +97,14 @@ public class Product {
         this.status = status;
     }
 
+    public Business getBusiness() {
+        return  business;
+    }
+
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
+
     @Override
     public String toString() {
         return "Products{" +
@@ -98,7 +114,8 @@ public class Product {
                 ", brand='" + brand + '\'' +
                 ", quantity='" + quantity + '\'' +
                 ", price='" + price + '\'' +
-                ", status=" + status +
+                ", status=" + status + '\'' +
+                ", business=" + business +
                 '}';
     }
 }

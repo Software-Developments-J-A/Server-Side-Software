@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.ferreshop.entities.Product;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
+import pe.edu.upc.ferreshop.repository.BusinessRepository;
 import pe.edu.upc.ferreshop.repository.ProductRepository;
 
 import java.util.List;
@@ -17,9 +18,21 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private BusinessRepository businessRepository;
+
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts(){
         List<Product> products=productRepository.findAll();
+        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/busines/{businessId}/products")
+    public ResponseEntity<List<Product>> getAllProductByBusiness(@PathVariable("businessId") Long businessId){
+        if(!businessRepository.existsById(businessId)){
+            throw new ResourceNotFoundException("No existe tutorial con el id="+businessId);
+        }
+        List<Product> products= productRepository.findAllProductBusinessIdJPQL(businessId);
         return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
 
@@ -35,7 +48,14 @@ public class ProductController {
     public ResponseEntity<Product> createProduct( @RequestBody Product product){
         Product newProduct=
                 productRepository.save(
-                        new Product(product.getName(),product.getSummary(),product.getBrand(),product.getQuantity(),product.getPrice(),product.isStatus()));
+                        new Product(
+                                product.getName(),
+                                product.getSummary(),
+                                product.getBrand(),
+                                product.getQuantity(),
+                                product.getPrice(),
+                                product.isStatus(),
+                                product.getBusiness()));
         return new ResponseEntity<Product>(newProduct,HttpStatus.CREATED);
     }
 
@@ -74,12 +94,12 @@ public class ProductController {
     }
 
     @GetMapping("/products/quantity")
-    public  ResponseEntity<List<Product>> findProductByQuantity(){
-        List<Product> products=productRepository.findByQuantitySQL(true);
+    public  ResponseEntity<List<Product>> findProductByQuantity(@PathVariable("quantity") Long quantity){
+        List<Product> products=productRepository.findByQuantitySQL(quantity);
         if(products.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
 
     @GetMapping("/products/price")
@@ -88,6 +108,6 @@ public class ProductController {
         if(products.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
 }
