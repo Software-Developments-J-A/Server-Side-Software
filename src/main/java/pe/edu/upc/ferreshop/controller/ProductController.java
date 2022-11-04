@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.upc.ferreshop.entities.Business;
 import pe.edu.upc.ferreshop.entities.Product;
 import pe.edu.upc.ferreshop.entities.User;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = {"http://localhost:4200/"})
 public class ProductController {
 
     @Autowired
@@ -28,7 +30,7 @@ public class ProductController {
         return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/busines/{businessId}/products")
+    @GetMapping("/business/{businessId}/products")
     public ResponseEntity<List<Product>> getAllProductByBusiness(@PathVariable("businessId") Long businessId){
         if(!businessRepository.existsById(businessId)){
             throw new ResourceNotFoundException("No existe tutorial con el id="+businessId);
@@ -46,7 +48,8 @@ public class ProductController {
 
 
     @PostMapping("/products")
-    public ResponseEntity<Product> createProduct( @RequestBody Product product){
+    public ResponseEntity<Product> createProduct(@RequestBody Product product){
+
         Product newProduct=
                 productRepository.save(
                         new Product(

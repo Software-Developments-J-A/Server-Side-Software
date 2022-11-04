@@ -26,7 +26,6 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name="business_id",nullable = false)
-    @JsonIgnore
     private Business business;
 
     public Product() {
