@@ -28,6 +28,7 @@ public class Business {
 
     @OneToOne
     @JoinColumn(name = "id_user",nullable = false)
+    @JsonIgnore
     private User user;
 
     public Business() {}

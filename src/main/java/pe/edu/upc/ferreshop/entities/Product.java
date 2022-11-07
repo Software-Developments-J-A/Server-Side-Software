@@ -27,10 +27,13 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name="business_id",nullable = false)
+    @JsonIgnore
     private Business business;
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JsonIgnoreProperties ( {"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
+
     private Category category;
 
     public Product() {

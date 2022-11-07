@@ -37,11 +37,11 @@ public class ProductController {
 
     @PostMapping("/products")
     @Transactional
-    public ResponseEntity<Product> save(@RequestParam("name") String name,
+    public ResponseEntity<Product> save(@RequestParam("brand") String brand,
+                                        @RequestParam("name") String name,
                                         @RequestParam("summary") String summary,
-                                        @RequestParam("brand") String brand,
-                                        @RequestParam("quantity") Long quantity,
                                         @RequestParam("price") Long price,
+                                        @RequestParam("quantity") Long quantity,
                                         @RequestParam("status") boolean status,
                                         @RequestParam("category_id") Long categoryID,
                                         @RequestParam("business_id") Long businessID)throws IOException {
