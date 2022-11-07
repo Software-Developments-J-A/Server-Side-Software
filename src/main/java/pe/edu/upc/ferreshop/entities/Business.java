@@ -1,5 +1,7 @@
 package pe.edu.upc.ferreshop.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -25,7 +27,7 @@ public class Business {
 
 
     @OneToOne
-    @JoinColumn(name = "id_user")
+    @JoinColumn(name = "id_user",nullable = false)
     private User user;
 
     public Business() {}
