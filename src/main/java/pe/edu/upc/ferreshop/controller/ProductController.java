@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.upc.ferreshop.entities.Business;
 import pe.edu.upc.ferreshop.entities.Category;
 import pe.edu.upc.ferreshop.entities.Product;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
@@ -37,12 +38,13 @@ public class ProductController {
     @PostMapping("/products")
     @Transactional
     public ResponseEntity<Product> save(@RequestParam("name") String name,
-                                        @RequestParam("Summary") String summary,
+                                        @RequestParam("summary") String summary,
                                         @RequestParam("brand") String brand,
                                         @RequestParam("quantity") Long quantity,
                                         @RequestParam("price") Long price,
                                         @RequestParam("status") boolean status,
-                                        @RequestParam("categoryId") Long categoryID)throws IOException {
+                                        @RequestParam("category_id") Long categoryID,
+                                        @RequestParam("business_id") Long businessID)throws IOException {
 
         Product product = new Product();
         product.setName(name);
@@ -57,6 +59,13 @@ public class ProductController {
 
         if( category!=null) {
             product.setCategory(category);
+        }
+
+        Business business = businessRepository.findById(businessID)
+                .orElseThrow(()-> new ResourceNotFoundException("Not found category with id="+businessID));
+
+        if( business!=null) {
+            product.setBusiness(business);
         }
 
         Product productSaved=productRepository.save(product);
@@ -86,24 +95,6 @@ public class ProductController {
         return new ResponseEntity<Product>(product,HttpStatus.OK);
     }
 
-
-    @PostMapping("/products")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product){
-
-        Product newProduct=
-                productRepository.save(
-                        new Product(
-                                product.getName(),
-                                product.getSummary(),
-                                product.getBrand(),
-                                product.getQuantity(),
-                                product.getPrice(),
-                                product.isStatus(),
-                                product.getBusiness(),
-                                product.getCategory()));
-
-        return new ResponseEntity<Product>(newProduct,HttpStatus.CREATED);
-    }
 
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> updateProduct(

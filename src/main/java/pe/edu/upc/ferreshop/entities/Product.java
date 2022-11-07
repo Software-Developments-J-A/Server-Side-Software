@@ -1,6 +1,7 @@
 package pe.edu.upc.ferreshop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
@@ -28,8 +29,8 @@ public class Product {
     @JoinColumn(name="business_id",nullable = false)
     private Business business;
 
-    @ManyToOne
-    @JoinColumn(name="category_id",nullable = false)
+    @ManyToOne(fetch= FetchType.LAZY)
+    @JsonIgnoreProperties ( {"hibernateLazyInitializer", "handler"})
     private Category category;
 
     public Product() {
@@ -43,8 +44,8 @@ public class Product {
         this.quantity = quantity;
         this.price = price;
         this.status = status;
-        this.business= business;
         this.category= category;
+        this.business = business;
     }
 
     public Long getId() {
@@ -101,7 +102,7 @@ public class Product {
         this.status = status;
     }
 
-    public Business getBusiness() {
+   public Business getBusiness() {
         return  business;
     }
 

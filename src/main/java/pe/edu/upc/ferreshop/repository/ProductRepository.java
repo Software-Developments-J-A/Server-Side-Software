@@ -18,7 +18,7 @@ public interface ProductRepository    extends JpaRepository<Product,Long> {
     @Query(value="SELECT * FROM products WHERE  price=10", nativeQuery = true)
     List<Product> findByPriceSQL(Long price);
 
-    @Query("SELECT c FROM Product c JOIN  c.business t WHERE c.business.id=?1")
+   @Query("SELECT c FROM Product c JOIN  c.business t WHERE c.business.id=?1")
     List<Product> findAllProductBusinessIdJPQL(Long businessId);
 
 
