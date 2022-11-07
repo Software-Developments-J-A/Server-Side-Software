@@ -28,10 +28,14 @@ public class Product {
     @JoinColumn(name="business_id",nullable = false)
     private Business business;
 
+    @ManyToOne
+    @JoinColumn(name="category_id",nullable = false)
+    private Category category;
+
     public Product() {
     }
 
-    public Product(String name, String summary, String brand,Long quantity,Long price, boolean status, Business business) {
+    public Product(String name, String summary, String brand,Long quantity,Long price, boolean status, Business business, Category category) {
         this.id = id;
         this.name = name;
         this.summary = summary;
@@ -40,6 +44,7 @@ public class Product {
         this.price = price;
         this.status = status;
         this.business= business;
+        this.category= category;
     }
 
     public Long getId() {
@@ -103,6 +108,8 @@ public class Product {
     public void setBusiness(Business business) {
         this.business = business;
     }
+    public Category getCategory() {return category;}
+    public void setCategory(Category category) {this.category =category; }
 
     @Override
     public String toString() {
@@ -115,6 +122,7 @@ public class Product {
                 ", price='" + price + '\'' +
                 ", status=" + status + '\'' +
                 ", business=" + business +
+                ", category=" + category +
                 '}';
     }
 }

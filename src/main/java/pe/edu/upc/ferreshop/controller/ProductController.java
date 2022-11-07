@@ -4,13 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pe.edu.upc.ferreshop.entities.Business;
+import pe.edu.upc.ferreshop.entities.Category;
 import pe.edu.upc.ferreshop.entities.Product;
-import pe.edu.upc.ferreshop.entities.User;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
 import pe.edu.upc.ferreshop.repository.BusinessRepository;
+import pe.edu.upc.ferreshop.repository.CategoryRepository;
 import pe.edu.upc.ferreshop.repository.ProductRepository;
 
+import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -23,6 +25,44 @@ public class ProductController {
 
     @Autowired
     private BusinessRepository businessRepository;
+
+    private CategoryRepository categoryRepository;
+
+    public ProductController(CategoryRepository categoryRepository,ProductRepository productRepository) {
+        this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
+    }
+
+
+    @PostMapping("/products")
+    @Transactional
+    public ResponseEntity<Product> save(@RequestParam("name") String name,
+                                        @RequestParam("Summary") String summary,
+                                        @RequestParam("brand") String brand,
+                                        @RequestParam("quantity") Long quantity,
+                                        @RequestParam("price") Long price,
+                                        @RequestParam("status") boolean status,
+                                        @RequestParam("categoryId") Long categoryID)throws IOException {
+
+        Product product = new Product();
+        product.setName(name);
+        product.setSummary(summary);
+        product.setBrand(brand);
+        product.setQuantity(quantity);
+        product.setPrice(price);
+        product.setStatus(status);
+
+        Category category = categoryRepository.findById(categoryID)
+                .orElseThrow(()-> new ResourceNotFoundException("Not found category with id="+categoryID));
+
+        if( category!=null) {
+            product.setCategory(category);
+        }
+
+        Product productSaved=productRepository.save(product);
+
+        return new ResponseEntity<Product>(productSaved,HttpStatus.CREATED);
+    }
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts(){
@@ -59,7 +99,9 @@ public class ProductController {
                                 product.getQuantity(),
                                 product.getPrice(),
                                 product.isStatus(),
-                                product.getBusiness()));
+                                product.getBusiness(),
+                                product.getCategory()));
+
         return new ResponseEntity<Product>(newProduct,HttpStatus.CREATED);
     }
 
