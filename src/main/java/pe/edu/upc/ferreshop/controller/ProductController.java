@@ -90,11 +90,6 @@ public class ProductController {
 
     @GetMapping("/shop/{businessName}")
     public ResponseEntity<List<Product>> getAllProductByBusinessName(@PathVariable("businessName") String businessName){
-
-     /*   if (!businessRepository.exists(Name<Business> businessName)){
-            throw  new ResourceNotFoundException("No existe Tienda con el nombre de" + businessName);
-        }*/
-
         List<Product> products= productRepository.findAllProductByBusinessNameJPQL(businessName);
         return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }

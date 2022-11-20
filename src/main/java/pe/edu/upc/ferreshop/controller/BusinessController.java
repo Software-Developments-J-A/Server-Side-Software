@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.ferreshop.entities.Business;
+import pe.edu.upc.ferreshop.entities.Order;
+import pe.edu.upc.ferreshop.entities.Product;
 import pe.edu.upc.ferreshop.entities.User;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
 import pe.edu.upc.ferreshop.repository.BusinessRepository;
@@ -29,6 +31,13 @@ public class BusinessController {
     public ResponseEntity<List<Business>> getAllBusiness() {
         List<Business> business=businessRepository.findAll();
         return new ResponseEntity<List<Business>>(business, HttpStatus.OK);
+    }
+
+    @GetMapping("/business/{userId}")
+    public ResponseEntity<Business> getBusinessByUserId(@PathVariable("userId") Long userId) {
+
+        Business businessActual= businessRepository.findBusinessByUserIdJPQL(userId);
+        return new ResponseEntity<Business>(businessActual, HttpStatus.OK);
     }
 
     @PostMapping("/business")
