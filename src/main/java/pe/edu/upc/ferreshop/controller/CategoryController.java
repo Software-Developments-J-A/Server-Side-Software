@@ -11,11 +11,13 @@ import pe.edu.upc.ferreshop.entities.Category;
 import pe.edu.upc.ferreshop.entities.Product;
 import pe.edu.upc.ferreshop.entities.User;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
+import pe.edu.upc.ferreshop.export.CategoryExcelExporter;
 import pe.edu.upc.ferreshop.repository.BusinessRepository;
 import pe.edu.upc.ferreshop.repository.CategoryRepository;
 import pe.edu.upc.ferreshop.repository.ProductRepository;
 import pe.edu.upc.ferreshop.repository.UserRepository;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
@@ -30,6 +32,7 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Transactional
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> searchCategories() {
         List<Category> categories=categoryRepository.findAll();
@@ -69,6 +72,24 @@ public class CategoryController {
     public ResponseEntity<Category> delete(@PathVariable Long id) {
         categoryRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @GetMapping("/categories/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/octet-stream");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=result_category";
+        response.setHeader(headerKey, headerValue);
+
+        List<Category> categoryResponse = categoryRepository.findAll();
+
+        CategoryExcelExporter excelExporter = new CategoryExcelExporter(
+                categoryResponse);
+
+        excelExporter.export(response);
     }
 
 

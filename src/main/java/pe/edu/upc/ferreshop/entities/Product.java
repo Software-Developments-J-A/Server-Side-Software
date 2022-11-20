@@ -15,8 +15,6 @@ public class Product {
     private String name;
     @Column(name="summary", length=255, nullable = false)
     private String summary;
-    @Column(name="brand", length=255, nullable = false)
-    private String brand;
     @Column(name="quantity",nullable = false)
     private Long quantity;
     @Column(name="price",nullable = false)
@@ -36,19 +34,25 @@ public class Product {
 
     private Category category;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column( name ="brand")
+    private byte[] brand;
+
     public Product() {
+
     }
 
-    public Product(String name, String summary, String brand,Long quantity,Long price, boolean status, Business business, Category category) {
+    public Product(Long id, String name, String summary, Long quantity, Long price, boolean status, Business business, Category category, byte[] brand) {
         this.id = id;
         this.name = name;
         this.summary = summary;
-        this.brand = brand;
         this.quantity = quantity;
         this.price = price;
         this.status = status;
-        this.category= category;
         this.business = business;
+        this.category = category;
+        this.brand = brand;
     }
 
     public Long getId() {
@@ -75,13 +79,6 @@ public class Product {
         this.summary = summary;
     }
 
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
     public Long getQuantity() {
         return quantity;
     }
@@ -89,6 +86,7 @@ public class Product {
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
+
     public Long getPrice() {
         return price;
     }
@@ -105,28 +103,27 @@ public class Product {
         this.status = status;
     }
 
-   public Business getBusiness() {
-        return  business;
+    public Business getBusiness() {
+        return business;
     }
 
     public void setBusiness(Business business) {
         this.business = business;
     }
-    public Category getCategory() {return category;}
-    public void setCategory(Category category) {this.category =category; }
 
-    @Override
-    public String toString() {
-        return "Products{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", summary='" + summary + '\'' +
-                ", brand='" + brand + '\'' +
-                ", quantity='" + quantity + '\'' +
-                ", price='" + price + '\'' +
-                ", status=" + status + '\'' +
-                ", business=" + business +
-                ", category=" + category +
-                '}';
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public byte[] getBrand() {
+        return brand;
+    }
+
+    public void setBrand(byte[] brand) {
+        this.brand = brand;
     }
 }

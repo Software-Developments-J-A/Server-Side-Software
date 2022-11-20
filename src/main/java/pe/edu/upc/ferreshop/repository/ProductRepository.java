@@ -21,8 +21,14 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
    @Query("SELECT c FROM Product c JOIN  c.business t WHERE c.business.id=?1")
     List<Product> findAllProductBusinessIdJPQL(Long businessId);
 
+    @Query("SELECT p FROM Product p WHERE p.name LIKE %?1%")
+    List<Product> findByNameLike(String name);
+    List<Product> findByNameContainingIgnoreCase(String name);
+
+
    @Query("SELECT c FROM Product c JOIN  c.business t WHERE c.business.name=?1")
     List<Product> findAllProductByBusinessNameJPQL(String businessName);
+
 
     @Query("SELECT p FROM Product p WHERE p.status=?1")
     List<Product> findByStatusJPQL(boolean status);

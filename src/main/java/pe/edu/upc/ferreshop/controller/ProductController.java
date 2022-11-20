@@ -4,16 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pe.edu.upc.ferreshop.entities.Business;
 import pe.edu.upc.ferreshop.entities.Category;
 import pe.edu.upc.ferreshop.entities.Product;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
+import pe.edu.upc.ferreshop.export.Export;
+import pe.edu.upc.ferreshop.export.ProductExcelExporter;
 import pe.edu.upc.ferreshop.repository.BusinessRepository;
 import pe.edu.upc.ferreshop.repository.CategoryRepository;
 import pe.edu.upc.ferreshop.repository.ProductRepository;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -37,7 +42,7 @@ public class ProductController {
 
     @PostMapping("/products")
     @Transactional
-    public ResponseEntity<Product> save(@RequestParam("brand") String brand,
+    public ResponseEntity<Product> save(@RequestParam("brand") MultipartFile brand,
                                         @RequestParam("name") String name,
                                         @RequestParam("summary") String summary,
                                         @RequestParam("price") Long price,
@@ -49,7 +54,7 @@ public class ProductController {
         Product product = new Product();
         product.setName(name);
         product.setSummary(summary);
-        product.setBrand(brand);
+        product.setBrand(Export.compressZLib(brand.getBytes()));
         product.setQuantity(quantity);
         product.setPrice(price);
         product.setStatus(status);
@@ -121,6 +126,28 @@ public class ProductController {
         return new ResponseEntity<Product>(productRepository.save(productUpdate),HttpStatus.OK);
     }
 
+
+
+    @GetMapping("/products/filter/{name}")
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public ResponseEntity<List<Product>> searchByName(@PathVariable String name){
+        List<Product> products=new ArrayList<>();
+        List<Product> productsAux=new ArrayList<>();
+
+        productsAux=productRepository.findByNameContainingIgnoreCase(name);
+
+        if(productsAux.size()>0){
+            productsAux.stream().forEach((p)->{
+                byte[] imageDescompressed = Export.decompressZLib(p.getBrand());
+                p.setBrand(imageDescompressed);
+                products.add(p);
+            });
+        }
+
+        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
+    }
+
+
     @DeleteMapping("/products/{id}")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") Long id){
         productRepository.deleteById(id);
@@ -154,4 +181,24 @@ public class ProductController {
         }
         return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
+
+    @GetMapping("/products/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/octet-stream");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=result_product";
+        response.setHeader(headerKey, headerValue);
+
+        List<Product> products = productRepository.findAll();
+
+        ProductExcelExporter excelExporter = new ProductExcelExporter(
+                products);
+
+        excelExporter.export(response);
+    }
+
+
+
 }
