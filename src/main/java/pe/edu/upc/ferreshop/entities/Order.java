@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -14,31 +16,35 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="date", length=60,nullable = false)
-    private String date;
+    @Column(nullable = false)
+    private LocalDateTime orderDate;
 
     @Column(name="price", length=10,nullable = false)
     private String price;
 
     @ManyToOne
-    @JoinColumn(name="product_id",nullable = false)
-    @JsonIgnore
+    @JoinColumn(name = "product_id", nullable = false,
+            foreignKey = @ForeignKey(name = "FK_ORDER_PRODUCT"))
     private Product product;
+
+    @OneToMany(mappedBy = "order",
+            cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<OrderDetail> details;
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JsonIgnoreProperties( {"hibernateLazyInitializer", "handler"})
     @JsonIgnore
-
     private Status status;
 
     public Order() {
     }
 
-    public Order(Long id, String date, String price, Product product, Status status) {
+    public Order(Long id, LocalDateTime orderDate, String price, Product product, List<OrderDetail> details, Status status) {
         this.id = id;
-        this.date = date;
+        this.orderDate = orderDate;
         this.price = price;
         this.product = product;
+        this.details = details;
         this.status = status;
     }
 
@@ -50,12 +56,12 @@ public class Order {
         this.id = id;
     }
 
-    public String getDate() {
-        return date;
+    public LocalDateTime getOrderDate() {
+        return orderDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
     }
 
     public String getPrice() {
@@ -74,6 +80,14 @@ public class Order {
         this.product = product;
     }
 
+    public List<OrderDetail> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<OrderDetail> details) {
+        this.details = details;
+    }
+
     public Status getStatus() {
         return status;
     }
@@ -81,16 +95,4 @@ public class Order {
     public void setStatus(Status status) {
         this.status = status;
     }
-
-    @Override
-    public String toString() {
-        return "Orders{" +
-                "id=" + id +
-                ", date='" + date + '\'' +
-                ", price='" + price + '\'' +
-                ", product='" + product + '\'' +
-                ", status=" + status +
-                '}';
-    }
-
 }
