@@ -43,10 +43,11 @@ public class StatusController {
     @Transactional
     @PostMapping("/status")
     public ResponseEntity<Status> save(@RequestBody Status status) {
-        Status newStatus= Status.builder().name(status.getName()).build();
+        Status newStatus= Status.builder().name(status.getName()).description(status.getDescription()).build();
         statusRepository.save(newStatus);
         return new ResponseEntity<Status>(newStatus,HttpStatus.CREATED);
     }
+
 
     @Transactional
     @PutMapping("/status/{id}")

@@ -87,11 +87,18 @@ public class ProductController {
     @GetMapping("/business/{businessId}/products")
     public ResponseEntity<List<Product>> getAllProductByBusiness(@PathVariable("businessId") Long businessId){
         if(!businessRepository.existsById(businessId)){
-            throw new ResourceNotFoundException("No existe tutorial con el id="+businessId);
+            throw new ResourceNotFoundException("No existe Business con el id="+businessId);
         }
         List<Product> products= productRepository.findAllProductBusinessIdJPQL(businessId);
         return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
+
+    @GetMapping("/shop/{businessName}")
+    public ResponseEntity<List<Product>> getAllProductByBusinessName(@PathVariable("businessName") String businessName){
+        List<Product> products= productRepository.findAllProductByBusinessNameJPQL(businessName);
+        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
+    }
+
 
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") Long id){
