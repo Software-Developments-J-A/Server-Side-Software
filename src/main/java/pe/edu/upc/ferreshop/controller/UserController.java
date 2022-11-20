@@ -3,7 +3,11 @@ package pe.edu.upc.ferreshop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.upc.ferreshop.converter.UserConverter;
+import pe.edu.upc.ferreshop.dto.LoginRequestDTO;
+import pe.edu.upc.ferreshop.dto.LoginResponseDTO;
 import pe.edu.upc.ferreshop.entities.Product;
 import pe.edu.upc.ferreshop.entities.User;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
@@ -16,9 +20,15 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:4200/"})
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
 
+    private final UserRepository userRepository;
+
+    private final UserConverter userConverter;
+
+    public UserController(UserRepository userRepository, UserConverter userConverter) {
+        this.userRepository = userRepository;
+        this.userConverter = userConverter;
+    }
 
     @GetMapping("/users")
     public ResponseEntity<List<User>>getAllUsers() {
@@ -47,6 +57,19 @@ public class UserController {
         return new ResponseEntity<User>(newUser,HttpStatus.CREATED);
     }
 
+    @Transactional(readOnly = true)
+    @PostMapping("/user/signin")
+    //public ResponseEntity<Patient> signInPatient(@RequestBody LoginRequestDTO request) {
+    public ResponseEntity<LoginResponseDTO> signInUser(@RequestBody LoginRequestDTO request) {
+        User userSigin=userRepository
+                .findByEmailAndPassword(request.getEmail(), request.getPassword())
+                .orElseThrow(()-> new ResourceNotFoundException("username y/o password incorrectos"));
+
+        LoginResponseDTO response=userConverter.convertEntityToDto(userSigin);
+
+        // return new ResponseEntity<Patient>(patientSigin, HttpStatus.OK);
+        return new ResponseEntity<LoginResponseDTO>(response, HttpStatus.OK);
+    }
 
     @PutMapping("/users/{id}")
     public ResponseEntity<User> updateProduct(
