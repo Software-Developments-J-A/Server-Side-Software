@@ -5,8 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.ferreshop.entities.Business;
-import pe.edu.upc.ferreshop.entities.Order;
-import pe.edu.upc.ferreshop.entities.Product;
 import pe.edu.upc.ferreshop.entities.User;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
 import pe.edu.upc.ferreshop.repository.BusinessRepository;

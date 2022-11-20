@@ -5,6 +5,7 @@ import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.ferreshop.dto.OrderProcDTO;
 import pe.edu.upc.ferreshop.entities.*;
@@ -12,7 +13,6 @@ import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
 import pe.edu.upc.ferreshop.repository.OrderRepository;
 import pe.edu.upc.ferreshop.repository.StatusRepository;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -24,20 +24,17 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:4200/"})
 
 public class OrderController {
+/*
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private StatusRepository statusRepository;
+    private final StatusRepository statusRepository;
 
     public OrderController(OrderRepository orderRepository, StatusRepository statusRepository) {
         this.orderRepository = orderRepository;
         this.statusRepository = statusRepository;
     }
-
-    @PostMapping("/orders")
     @Transactional
+    @PostMapping("/orders")
     public ResponseEntity<Order> save(@RequestParam("orderdate") LocalDateTime orderdate,
                                       @RequestParam("price") String price,
                                       @RequestParam("status_id") Long statusId)throws IOException {
@@ -62,7 +59,7 @@ public class OrderController {
         List<Order> orders=orderRepository.findAll();
         return new ResponseEntity<List<Order>>(orders, HttpStatus.OK);
     }
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     @GetMapping("/orders/search/date")
     public ResponseEntity<List<Order>> searchByDates(@RequestParam(value = "datestart") String datestart, @RequestParam(value = "dateend") String dateend){
         List<Order> orders =orderRepository.searchByDates(
@@ -70,7 +67,7 @@ public class OrderController {
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     @GetMapping("/orders/search/others")
     public ResponseEntity<List<Order>> searchByOthers(@RequestParam(value = "id") String id, @RequestParam(value = "name") String fullName){
         List<Order> orders   = orderRepository.search(id,fullName);
@@ -79,7 +76,7 @@ public class OrderController {
     }
 
 
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     @PostMapping("/orders")
     public ResponseEntity<Order> save(@Valid @RequestBody Order order) {
         order.getDetails().forEach(det -> det.setOrder(order));
@@ -87,7 +84,7 @@ public class OrderController {
         return new ResponseEntity<Order>(newOrder,HttpStatus.CREATED);
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     @GetMapping("/orders/callProcedure")
     public ResponseEntity<List<OrderProcDTO>> callProcOrFunction(){
         List<OrderProcDTO> orders = new ArrayList<>();
@@ -116,5 +113,5 @@ public class OrderController {
     public ResponseEntity<HttpStatus> deleteOrder(@PathVariable("id") Long id){
         orderRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+    }*/
 }
