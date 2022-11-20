@@ -6,7 +6,7 @@ import pe.edu.upc.ferreshop.entities.Product;
 
 import java.util.List;
 
-public interface ProductRepository    extends JpaRepository<Product,Long> {
+public interface ProductRepository extends JpaRepository<Product,Long> {
 
     @Query(value="SELECT * FROM products WHERE  status=?1", nativeQuery = true)
     List<Product> findByStatusSQL(boolean status);
@@ -21,6 +21,8 @@ public interface ProductRepository    extends JpaRepository<Product,Long> {
    @Query("SELECT c FROM Product c JOIN  c.business t WHERE c.business.id=?1")
     List<Product> findAllProductBusinessIdJPQL(Long businessId);
 
+   @Query("SELECT c FROM Product c JOIN  c.business t WHERE c.business.name=?1")
+    List<Product> findAllProductByBusinessNameJPQL(String businessName);
 
     @Query("SELECT p FROM Product p WHERE p.status=?1")
     List<Product> findByStatusJPQL(boolean status);
