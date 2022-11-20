@@ -6,9 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.ferreshop.entities.*;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
+import pe.edu.upc.ferreshop.export.ProductExcelExporter;
+import pe.edu.upc.ferreshop.export.StatusExcelExporter;
 import pe.edu.upc.ferreshop.repository.OrderRepository;
 import pe.edu.upc.ferreshop.repository.StatusRepository;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
@@ -61,6 +64,23 @@ public class StatusController {
     public ResponseEntity<Status> delete(@PathVariable Long id) {
         statusRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/status/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/octet-stream");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=result_status";
+        response.setHeader(headerKey, headerValue);
+
+        List<Status> statuses = statusRepository.findAll();
+
+        StatusExcelExporter excelExporter = new StatusExcelExporter(
+                statuses);
+
+        excelExporter.export(response);
     }
 
 
