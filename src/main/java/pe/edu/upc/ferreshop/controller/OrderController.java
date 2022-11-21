@@ -36,12 +36,21 @@ public class OrderController {
     @Transactional
     @PostMapping("/orders")
     public ResponseEntity<Order> save(@RequestParam("orderdate") LocalDateTime orderdate,
+                                      @RequestParam("client_name") String client_name,
+                                      @RequestParam("phone") Long phone,
+                                      @RequestParam("distric") String distric,
                                       @RequestParam("price") String price,
+                                      @RequestParam("product_id") Product product_id,
                                       @RequestParam("status_id") Long statusId)throws IOException {
 
         Order order = new Order();
         order.setOrderDate(orderdate);
+        order.setClient_name(client_name);
+        order.setPhone(phone);
+        order.setDistric(distric);
         order.setPrice(price);
+        order.setProduct(product_id);
+
 
         Status status    = statusRepository.findById(statusId)
                 .orElseThrow(()-> new ResourceNotFoundException("Not found status with id="+statusId));
