@@ -1,8 +1,11 @@
 package pe.edu.upc.ferreshop.controller;
 
+import jdk.jshell.execution.Util;
+import org.apache.commons.math3.analysis.function.Exp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pe.edu.upc.ferreshop.entities.Business;
@@ -16,7 +19,7 @@ import pe.edu.upc.ferreshop.repository.CategoryRepository;
 import pe.edu.upc.ferreshop.repository.ProductRepository;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,11 @@ public class ProductController {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
     }
+    /*public ProductController(CategoryRepository categoryRepository,ProductRepository productRepository){
+        this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
+    }*/
+
 
 
     @PostMapping("/products")
@@ -45,7 +53,7 @@ public class ProductController {
     public ResponseEntity<Product> save(@RequestParam("brand") MultipartFile brand,
                                         @RequestParam("name") String name,
                                         @RequestParam("summary") String summary,
-                                        @RequestParam("price") Long price,
+                                        @RequestParam("price") Double price,
                                         @RequestParam("quantity") Long quantity,
                                         @RequestParam("status") boolean status,
                                         @RequestParam("category_id") Long categoryID,
@@ -79,17 +87,20 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getAllProducts(){
-        List<Product> products=productRepository.findAll();
-        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
-    }
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<Product>> search() {
+        List<Product> products=new ArrayList<>();
+        List<Product> productsAux=new ArrayList<>();
+        productsAux=productRepository.findAll();
 
-    @GetMapping("/business/{businessId}/products")
-    public ResponseEntity<List<Product>> getAllProductByBusiness(@PathVariable("businessId") Long businessId){
-        if(!businessRepository.existsById(businessId)){
-            throw new ResourceNotFoundException("No existe Business con el id="+businessId);
+        if(productsAux.size()>0){
+            productsAux.stream().forEach((p)->{
+                byte[] imageDescompressed = Export.decompressZLib(p.getBrand());
+                p.setBrand(imageDescompressed);
+                products.add(p);
+            });
         }
-        List<Product> products= productRepository.findAllProductBusinessIdJPQL(businessId);
+
         return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
 
@@ -128,7 +139,7 @@ public class ProductController {
 
 
 
-    @GetMapping("/products/filter/{name}")
+   /* @GetMapping("/products/filter/{name}")
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public ResponseEntity<List<Product>> searchByName(@PathVariable String name){
         List<Product> products=new ArrayList<>();
@@ -145,7 +156,7 @@ public class ProductController {
         }
 
         return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
-    }
+    }*/
 
 
     @DeleteMapping("/products/{id}")

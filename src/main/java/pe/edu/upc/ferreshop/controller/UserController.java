@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.ferreshop.converter.UserConverter;
 import pe.edu.upc.ferreshop.dto.LoginRequestDTO;
 import pe.edu.upc.ferreshop.dto.LoginResponseDTO;
-import pe.edu.upc.ferreshop.entities.Product;
 import pe.edu.upc.ferreshop.entities.User;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
 import pe.edu.upc.ferreshop.repository.UserRepository;
@@ -20,15 +19,13 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:4200/"})
 public class UserController {
 
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
 
-    private final UserRepository userRepository;
+    private UserConverter userConverter;
 
-    private final UserConverter userConverter;
 
-    public UserController(UserRepository userRepository, UserConverter userConverter) {
-        this.userRepository = userRepository;
-        this.userConverter = userConverter;
-    }
 
     @GetMapping("/users")
     public ResponseEntity<List<User>>getAllUsers() {

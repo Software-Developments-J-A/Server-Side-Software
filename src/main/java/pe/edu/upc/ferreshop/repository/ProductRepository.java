@@ -26,14 +26,14 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     List<Product> findByNameContainingIgnoreCase(String name);
 
 
-   @Query("SELECT c FROM Product c JOIN  c.business t WHERE c.business.name=?1")
+    @Query("SELECT c FROM Product c JOIN  c.business t WHERE c.business.name=?1")
     List<Product> findAllProductByBusinessNameJPQL(String businessName);
 
 
-    @Query("SELECT p FROM Product p WHERE p.status=?1")
+   /* @Query("SELECT p FROM Product p WHERE p.status=?1")
     List<Product> findByStatusJPQL(boolean status);
+*/
+   // List<Product> findByStatus(boolean status);
 
-    List<Product> findByStatus(boolean status);
-
-    List<Product> findByNameContaining (String name);
+  //  List<Product> findByNameContaining (String name);
 }

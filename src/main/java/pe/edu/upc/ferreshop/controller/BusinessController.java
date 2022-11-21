@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.upc.ferreshop.converter.BusinessConvert;
+import pe.edu.upc.ferreshop.dto.BusinessResponseDTO;
+import pe.edu.upc.ferreshop.dto.LoginRequestDTO;
+import pe.edu.upc.ferreshop.dto.LoginResponseDTO;
 import pe.edu.upc.ferreshop.entities.Business;
 import pe.edu.upc.ferreshop.entities.User;
 import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
@@ -19,12 +23,15 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:4200/"})
 public class BusinessController {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private BusinessRepository businessRepository;
+    private final UserRepository userRepository;
+    private final BusinessRepository businessRepository;
 
-
+    private final BusinessConvert businessConvert;
+    public BusinessController(BusinessConvert businessConvert,UserRepository userRepository, BusinessRepository businessRepository) {
+       this.businessConvert= businessConvert;
+       this.userRepository = userRepository;
+       this.businessRepository = businessRepository;
+    }
     @GetMapping("/business")
     public ResponseEntity<List<Business>> getAllBusiness() {
         List<Business> business=businessRepository.findAll();
@@ -37,6 +44,14 @@ public class BusinessController {
         Business businessActual= businessRepository.findBusinessByUserIdJPQL(userId);
         return new ResponseEntity<Business>(businessActual, HttpStatus.OK);
     }
+    /*@PostMapping("/business/{userId}")
+    public ResponseEntity<BusinessResponseDTO> getBusinessByUserId(@PathVariable("userId") Long userId) {
+
+        Business businessActual= businessRepository.findBusinessByUserIdJPQL(userId);
+        BusinessResponseDTO response=  businessConvert.convertEntityToDto(businessActual);
+        return new ResponseEntity<BusinessResponseDTO>(response, HttpStatus.OK);
+    }*/
+
 
     @PostMapping("/business")
     @Transactional

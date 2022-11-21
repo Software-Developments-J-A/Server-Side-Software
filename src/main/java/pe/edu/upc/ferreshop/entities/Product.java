@@ -2,9 +2,10 @@ package pe.edu.upc.ferreshop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
 
 import javax.persistence.*;
-
+@Builder
 @Entity
 @Table(name="products")
 public class Product {
@@ -18,7 +19,7 @@ public class Product {
     @Column(name="quantity",nullable = false)
     private Long quantity;
     @Column(name="price",nullable = false)
-    private Long price;
+    private Double price;
     @Column(name="status")
     private boolean status;
 
@@ -43,7 +44,7 @@ public class Product {
 
     }
 
-    public Product(Long id, String name, String summary, Long quantity, Long price, boolean status, Business business, Category category, byte[] brand) {
+    public Product(Long id, String name, String summary, Long quantity, Double price, boolean status, Business business, Category category, byte[] brand) {
         this.id = id;
         this.name = name;
         this.summary = summary;
@@ -87,11 +88,11 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public Long getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
