@@ -19,6 +19,15 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime orderDate;
 
+    @Column(name="client_name", length=50,nullable = false)
+    private String client_name;
+
+    @Column(name="phone", length=11,nullable = false)
+    private Long phone;
+
+    @Column(name="distric", length=50,nullable = false)
+    private String distric;
+
     @Column(name="price", length=10,nullable = false)
     private String price;
 
@@ -36,12 +45,14 @@ public class Order {
     @JsonIgnore
     private Status status;
 
-    public Order() {
-    }
+    public Order() {}
 
-    public Order(Long id, LocalDateTime orderDate, String price, Product product, List<OrderDetail> details, Status status) {
+    public Order(Long id, LocalDateTime orderDate, String client_name, Long phone, String distric, String price, Product product, List<OrderDetail> details, Status status) {
         this.id = id;
         this.orderDate = orderDate;
+        this.client_name = client_name;
+        this.phone = phone;
+        this.distric = distric;
         this.price = price;
         this.product = product;
         this.details = details;
@@ -62,6 +73,30 @@ public class Order {
 
     public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public String getClient_name() {
+        return client_name;
+    }
+
+    public void setClient_name(String client_name) {
+        this.client_name = client_name;
+    }
+
+    public Long getPhone() {
+        return phone;
+    }
+
+    public void setPhone(Long phone) {
+        this.phone = phone;
+    }
+
+    public String getDistric() {
+        return distric;
+    }
+
+    public void setDistric(String distric) {
+        this.distric = distric;
     }
 
     public String getPrice() {
