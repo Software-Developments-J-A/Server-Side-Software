@@ -27,7 +27,7 @@ public class ProductExcelExporter {
     }
 
     private void writeHeaderLine() {
-        sheet = workbook.createSheet("Productos");
+        sheet = workbook.createSheet("Products");
         Row row = sheet.createRow(0);
         CellStyle style = workbook.createCellStyle();
 

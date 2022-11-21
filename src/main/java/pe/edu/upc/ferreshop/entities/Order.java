@@ -1,18 +1,53 @@
 package pe.edu.upc.ferreshop.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+@Setter
 @Entity
-@Table(name = "orders")
+@Table(name="orders")
 public class Order {
-
     @Id
+    @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<OrderLine> lines;
+
+    @Column(name="total", nullable = false)
+    private Double total;
+
+  /* @Transient
+    public Double getTotalOrderPrice() {
+        double sum = 0D;
+        List<OrderProduct> orderProducts = getOrderProducts();
+        for (OrderProduct op : orderProducts) {
+            sum += op.getTotalPrice();
+        }
+        return sum;
+    }*/
+
+  /*  @Transient
+    public int getNumberOfProducts() {
+        return this.orderProducts.size();
+    }
+   /*@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -22,6 +57,21 @@ public class Order {
     @Column(name="price", length=10,nullable = false)
     private String price;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "pk.order")
+    @Valid
+    private List<OrderProduct> orderProducts=new ArrayList<>();
+
+    @Transient
+    public Double getTotalPrice() {
+        double sum = 0D;
+        List<OrderProduct> orderProducts = getOrderProducts();
+        for (OrderProduct op : orderProducts) {
+            sum += op.getTotalPrice();
+        }
+        return sum;
+    }
+
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false,
             foreignKey = @ForeignKey(name = "FK_ORDER_PRODUCT"))
@@ -29,7 +79,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order",
             cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<OrderDetail> details;
+    private List<OrderProduct> details;
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JsonIgnoreProperties( {"hibernateLazyInitializer", "handler"})
@@ -39,7 +89,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, LocalDateTime orderDate, String price, Product product, List<OrderDetail> details, Status status) {
+    public Order(Long id, LocalDateTime orderDate, String price, Product product, List<OrderProduct> details, Status status) {
         this.id = id;
         this.orderDate = orderDate;
         this.price = price;
@@ -80,11 +130,11 @@ public class Order {
         this.product = product;
     }
 
-    public List<OrderDetail> getDetails() {
+    public List<OrderProduct> getDetails() {
         return details;
     }
 
-    public void setDetails(List<OrderDetail> details) {
+    public void setDetails(List<OrderProduct> details) {
         this.details = details;
     }
 
@@ -94,5 +144,5 @@ public class Order {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
+    }*/
 }

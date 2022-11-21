@@ -1,22 +1,18 @@
 package pe.edu.upc.ferreshop.controller;
 
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import pe.edu.upc.ferreshop.dto.OrderProcDTO;
+import pe.edu.upc.ferreshop.converter.OrderConvert;
+import pe.edu.upc.ferreshop.dto.OrderDTO;
 import pe.edu.upc.ferreshop.entities.*;
-import pe.edu.upc.ferreshop.exception.ResourceNotFoundException;
-import pe.edu.upc.ferreshop.repository.OrderRepository;
-import pe.edu.upc.ferreshop.repository.StatusRepository;
+import pe.edu.upc.ferreshop.export.WrapperResponse;
+import pe.edu.upc.ferreshop.services.OrderServices;
 
-import javax.validation.Valid;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 @RestController
@@ -24,6 +20,51 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:4200/"})
 
 public class OrderController {
+    @Autowired
+    private OrderConvert converter;
+
+    @Autowired
+    private OrderServices orderService;
+
+    @GetMapping("orders")
+    public ResponseEntity<WrapperResponse<List<OrderDTO>>> findAll(
+            @RequestParam(name = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "5") int pageSize
+    ){
+
+        Pageable page = PageRequest.of(pageNumber, pageSize);
+        List<Order> orders = orderService.findAll(page);
+        return new WrapperResponse<>(true, "success", converter.fromEntity(orders))
+                .createResponse();
+    }
+
+    @GetMapping("orders/{id}")
+    public ResponseEntity<WrapperResponse<OrderDTO>> findById(@PathVariable(name="id") Long id){
+        Order order = orderService.findById(id);
+        return new WrapperResponse<>(true, "success", converter.fromEntity(order))
+                .createResponse();
+    }
+
+    @PostMapping("orders")
+    public ResponseEntity<WrapperResponse<OrderDTO>> create(@RequestBody OrderDTO order){
+        Order newOrder = orderService.save(converter.fromDTO(order));
+        return new WrapperResponse<>(true, "success", converter.fromEntity(newOrder))
+                .createResponse();
+    }
+
+    /*@PutMapping
+    public ResponseEntity<WrapperResponse<OrderDTO>> update(@RequestBody OrderDTO order){
+        Order newOrder = orderService.save(converter.fromDTO(order));
+        return new WrapperResponse<>(true, "success", converter.fromEntity(newOrder))
+                .createResponse();
+    }*/
+
+   /* @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable(name="id") Long id){
+        orderService.delete(id);
+        return new WrapperResponse<>(true, "success", null).createResponse();
+    }*/
+
 /*
     private final OrderRepository orderRepository;
 
