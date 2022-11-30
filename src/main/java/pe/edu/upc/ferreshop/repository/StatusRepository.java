@@ -13,8 +13,8 @@ public interface StatusRepository extends JpaRepository<Status,Long> {
     @Query(value="SELECT * FROM status WHERE  name='proceso'", nativeQuery = true)
     List<Status> findByNameSQL(String status);
 
-    @Query("SELECT o FROM Order o WHERE o.status ='proceso'")
+ /*  @Query("SELECT o FROM Order o WHERE o.status ='proceso'")
     List<Order> findByStatusJPQL(String status);
-
+*/
 
 }

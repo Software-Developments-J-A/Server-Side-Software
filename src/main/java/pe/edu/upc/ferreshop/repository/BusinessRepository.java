@@ -8,7 +8,6 @@ import pe.edu.upc.ferreshop.entities.User;
 import java.util.List;
 public interface BusinessRepository extends JpaRepository<Business,Long> {
 
-
     @Query("SELECT c FROM Business c JOIN  c.user t WHERE c.user.id=?1")
     Business findBusinessByUserIdJPQL(Long userId);
 }

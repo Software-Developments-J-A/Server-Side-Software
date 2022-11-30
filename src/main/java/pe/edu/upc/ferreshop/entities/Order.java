@@ -16,36 +16,20 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDateTime orderDate;
-
     @Column(name="price", length=10,nullable = false)
     private String price;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false,
-            foreignKey = @ForeignKey(name = "FK_ORDER_PRODUCT"))
-    private Product product;
 
     @OneToMany(mappedBy = "order",
             cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OrderDetail> details;
 
-    @ManyToOne(fetch= FetchType.LAZY)
-    @JsonIgnoreProperties( {"hibernateLazyInitializer", "handler"})
-    @JsonIgnore
-    private Status status;
-
     public Order() {
     }
 
-    public Order(Long id, LocalDateTime orderDate, String price, Product product, List<OrderDetail> details, Status status) {
+    public Order(Long id, String price, List<OrderDetail> details) {
         this.id = id;
-        this.orderDate = orderDate;
         this.price = price;
-        this.product = product;
         this.details = details;
-        this.status = status;
     }
 
     public Long getId() {
@@ -56,13 +40,6 @@ public class Order {
         this.id = id;
     }
 
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
-    }
 
     public String getPrice() {
         return price;
@@ -72,13 +49,7 @@ public class Order {
         this.price = price;
     }
 
-    public Product getProduct() {
-        return product;
-    }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 
     public List<OrderDetail> getDetails() {
         return details;
@@ -88,11 +59,4 @@ public class Order {
         this.details = details;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 }
